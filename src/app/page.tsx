@@ -20,6 +20,7 @@ export default function Typewriter() {
   const [darkMode, setDarkMode] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
   const [hasCheckedDevice, setHasCheckedDevice] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioBufferRef = useRef<AudioBuffer | null>(null);
@@ -69,6 +70,24 @@ export default function Typewriter() {
       document.documentElement.removeAttribute("data-theme");
     }
   }, [darkMode]);
+
+  // Fullscreen change listener
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
 
   // Scroll to cursor when typing
   const scrollToCursor = useCallback(() => {
@@ -282,6 +301,51 @@ export default function Typewriter() {
         </p>
         <p className="text-xs text-ink">Press Cmd/Ctrl + Backspace to clear</p>
       </div>
+
+      {/* Fullscreen toggle button - top right */}
+      <button
+        onClick={toggleFullscreen}
+        className="absolute top-6 right-6 z-10 p-2 opacity-20 hover:opacity-60 transition-opacity"
+        title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+      >
+        {isFullscreen ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-ink"
+          >
+            <polyline points="4 14 10 14 10 20" />
+            <polyline points="20 10 14 10 14 4" />
+            <line x1="14" y1="10" x2="21" y2="3" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-ink"
+          >
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+        )}
+      </button>
 
       {/* Paper container - scrollable */}
       <div
