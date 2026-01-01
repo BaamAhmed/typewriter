@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #e8e8e8;
+  --paper: #ffffff;
+  --ink: #1a1a1a;
+  --key-body: #2a2a2a;
+  --key-face: #f0f0f0;
+  --key-pressed: #1a1a1a;
+}
+
+[data-theme="dark"] {
+  --background: #1a1a1a;
+  --paper: #252525;
+  --ink: #c8c8c8;
+  --key-body: #888888;
+  --key-face: #2a2a2a;
+  --key-pressed: #c8c8c8;
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-key-body: var(--key-body);
+  --color-key-face: var(--key-face);
+  --color-key-pressed: var(--key-pressed);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Keyboard key styles - 3D effect with low opacity */
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--key-face);
+  border: 1px solid var(--key-body);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--key-body);
+  transition: all 0.05s ease;
+  user-select: none;
+  box-shadow: 0 2px 0 var(--key-body);
+  position: relative;
+  top: 0;
+  opacity: 0.2;
+}
+
+.key.pressed {
+  background: var(--key-pressed);
+  color: var(--key-face);
+  box-shadow: 0 0 0 var(--key-body);
+  top: 2px;
+  opacity: 1;
+}
+
+.key.space {
+  width: 200px;
+}
+
+.key.wide {
+  width: 56px;
+  font-size: 10px;
+}
+
+/* Paper styles */
+.paper {
+  background: var(--paper);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .paper {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Caret blink animation */
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  animation: blink 1s infinite;
+}
+
+/* Line styles for paper */
+.paper-line {
+  min-height: 1.5em;
+  line-height: 1.5em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
